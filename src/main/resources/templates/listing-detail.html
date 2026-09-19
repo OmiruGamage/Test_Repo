@@ -29,31 +29,13 @@
        th:text="${listing.description}"></p>
 
     <p>
-        Listed by
-        <a th:href="@{/reviews/users/{id}(id=${owner.id})}" th:text="${owner.name}"></a>
-        &mdash; <span th:text="${ownerRating.display}"></span>
+        Listed by <span th:text="${owner.name}"></span>
+        &mdash; <span>No ratings yet</span>
     </p>
 
     <button th:unless="${isOwner}" type="button">
         Request to Rent
     </button>
-
-    <h2>Gear reviews</h2>
-
-    <p th:text="${gearRating.display}"></p>
-
-    <p th:if="${gearReviews.isEmpty()}">
-        Nobody has reviewed this gear yet.
-    </p>
-
-    <div th:each="review : ${gearReviews}">
-        <p>
-            <strong th:text="${review.rating} + ' / 5'"></strong>
-            from <span th:text="${review.reviewerName}"></span>,
-            <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}"></span>
-        </p>
-        <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
-    </div>
 
 </div>
 

@@ -20,14 +20,6 @@
     <span th:text="${user.email}"></span>
 </p>
 
-<ul>
-    <li><a th:href="@{/listings/mine}">My Gear</a></li>
-    <li><a th:href="@{/listings/new}">Add a listing</a></li>
-    <li><a th:href="@{/reviews}">My reviews</a></li>
-    <li><a th:href="@{/reviews/users/{id}(id=${user.id})}">Ratings I've received</a></li>
-    <li th:if="${user.role.name() == 'ADMIN'}"><a th:href="@{/admin}">Admin area</a></li>
-</ul>
-
 <form th:action="@{/logout}" method="post">
     <button type="submit">
         Logout

@@ -28,11 +28,6 @@
     <p th:text="${listing.dailyRate} + ' AUD / day'"></p>
     <p th:text="'Expires ' + ${listing.expiryDate}"></p>
     <p th:text="${listing.status.label}"></p>
-    <p>
-        Rating: <span th:text="${ratings.get(listing.id).display}"></span>
-        <a th:unless="${ratings.get(listing.id).empty}"
-           th:href="@{/reviews/listings/{id}(id=${listing.id})}">Read reviews</a>
-    </p>
 
     <div th:if="${listing.status.name() == 'PUBLISHED'}">
         <a th:href="@{/listings/{id}/edit(id=${listing.id})}">Edit</a>

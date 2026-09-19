@@ -29,7 +29,8 @@ public class SecurityConfig {
                     "/login",
                     "/css/**",
                     "/js/**",
-                    "/images/**"
+                    "/images/**",
+                    "/listings/photos/**"
                 ).permitAll()
 
                 .requestMatchers("/admin/**")
