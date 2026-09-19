@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ratings</title>
+</head>
+
+<body>
+
+<h1 th:text="'Ratings for ' + ${reviewedUserName}"></h1>
+
+<h2>As an owner</h2>
+
+<p th:text="${ownerRating.display}"></p>
+
+<div th:each="review : ${ownerReviews}">
+    <p>
+        <strong th:text="${review.rating} + ' / 5'"></strong>
+        from <span th:text="${review.reviewerName}"></span>
+        for <span th:text="${review.listingTitle}"></span>,
+        <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}"></span>
+    </p>
+    <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
+</div>
+
+<h2>As a renter</h2>
+
+<p th:text="${renterRating.display}"></p>
+
+<div th:each="review : ${renterReviews}">
+    <p>
+        <strong th:text="${review.rating} + ' / 5'"></strong>
+        from <span th:text="${review.reviewerName}"></span>
+        after renting <span th:text="${review.listingTitle}"></span>,
+        <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}"></span>
+    </p>
+    <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
+</div>
+
+<p>
+    <a th:href="@{/}">Back to browse</a>
+</p>
+
+</body>
+</html>

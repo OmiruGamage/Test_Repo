@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gear Reviews</title>
+</head>
+
+<body>
+
+<h1 th:text="'Reviews for ' + ${listing.title}"></h1>
+
+<p th:text="${gearRating.display}"></p>
+
+<p th:if="${gearReviews.isEmpty()}">
+    Nobody has reviewed this gear yet.
+</p>
+
+<div th:each="review : ${gearReviews}">
+    <p>
+        <strong th:text="${review.rating} + ' / 5'"></strong>
+        from <span th:text="${review.reviewerName}"></span>,
+        <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}"></span>
+    </p>
+    <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
+</div>
+
+<p>
+    <a th:if="${isOwner}" th:href="@{/listings/mine}">Back to My Gear</a>
+    <a th:unless="${isOwner}" th:href="@{/listings/{id}(id=${listing.id})}">Back to listing</a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+
+<body>
+
+<h1>GearHub Admin</h1>
+
+<ul>
+    <li><a th:href="@{/admin/users}">Manage users</a></li>
+    <li><a th:href="@{/admin/listings}">Manage listings</a></li>
+    <li><a th:href="@{/admin/actions}">Action history</a></li>
+</ul>
+
+<h2>Recent actions</h2>
+
+<p th:if="${recentActions.isEmpty()}">No admin actions have been taken yet.</p>
+
+<table th:unless="${recentActions.isEmpty()}">
+    <thead>
+    <tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="action : ${recentActions}">
+        <td th:text="${#temporals.format(action.createdAt, 'd MMM yyyy HH:mm')}"></td>
+        <td th:text="${action.adminName}"></td>
+        <td th:text="${action.actionType.label}"></td>
+        <td th:text="${action.targetLabel}"></td>
+        <td th:text="${action.reason}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/profile}">Back to profile</a></p>
+
+</body>
+</html>

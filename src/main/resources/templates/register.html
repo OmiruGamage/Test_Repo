@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+</head>
+
+<body>
+
+<h1>Create a GearHub Account</h1>
+
+<p th:if="${error}" th:text="${error}"></p>
+
+<form th:action="@{/register}"
+      th:object="${registrationRequest}"
+      method="post">
+
+    <div>
+        <label for="name">Name</label>
+        <input
+            id="name"
+            type="text"
+            th:field="*{name}"
+            required>
+    </div>
+
+    <div>
+        <label for="email">Email</label>
+        <input
+            id="email"
+            type="email"
+            th:field="*{email}"
+            required>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input
+            id="password"
+            type="password"
+            th:field="*{password}"
+            required>
+    </div>
+
+    <button type="submit">
+        Create Account
+    </button>
+
+</form>
+
+<p>
+    Have an account?
+    <a th:href="@{/login}">Log in</a>
+</p>
+
+</body>
+</html>

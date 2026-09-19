@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leave a Review</title>
+</head>
+
+<body>
+
+<h1 th:switch="${reviewType.name()}">
+    <span th:case="'GEAR'" th:text="'How was the ' + ${rental.listingTitle} + '?'"></span>
+    <span th:case="'OWNER'" th:text="'How reliable was ' + ${revieweeName} + ' as an owner?'"></span>
+    <span th:case="'RENTER'" th:text="'How reliable was ' + ${revieweeName} + ' as a renter?'"></span>
+</h1>
+
+<p>
+    Rental of <span th:text="${rental.listingTitle}"></span>,
+    <span th:text="${#temporals.format(rental.startDate, 'd MMM yyyy')}"></span>
+    to
+    <span th:text="${#temporals.format(rental.endDate, 'd MMM yyyy')}"></span>
+</p>
+
+<form th:action="@{/reviews/rentals/{rentalId}/{type}(rentalId=${rental.rentalId}, type=${reviewType})}"
+      th:object="${reviewForm}"
+      method="post">
+
+    <fieldset>
+        <legend th:text="${reviewType.label} + ' (1 = poor, 5 = excellent)'"></legend>
+
+        <label th:each="n : ${#numbers.sequence(1, 5)}">
+            <input type="radio" th:field="*{rating}" th:value="${n}">
+            <span th:text="${n}"></span>
+        </label>
+
+        <span th:if="${#fields.hasErrors('rating')}"
+              th:errors="*{rating}"></span>
+    </fieldset>
+
+    <div>
+        <label for="comment">Comment (optional)</label>
+        <textarea id="comment"
+                  rows="5"
+                  maxlength="1000"
+                  th:field="*{comment}"></textarea>
+        <span th:if="${#fields.hasErrors('comment')}"
+              th:errors="*{comment}"></span>
+    </div>
+
+    <button type="submit">Post review</button>
+
+</form>
+
+<p>
+    <a th:href="@{/reviews}">Back to my reviews</a>
+</p>
+
+</body>
+</html>

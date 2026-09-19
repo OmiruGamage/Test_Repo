@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Gear</title>
+</head>
+
+<body>
+
+<h1>My Gear</h1>
+
+<p th:if="${param.updated}">Your listing has been updated.</p>
+<p th:if="${param.deleted}">Your listing has been removed.</p>
+
+<p th:if="${listings.isEmpty()}">
+    You haven't listed any gear yet.
+</p>
+
+<div th:each="listing : ${listings}">
+
+    <img th:if="${thumbnails.get(listing.id) != null}"
+         th:src="@{/listings/photos/{photoId}(photoId=${thumbnails.get(listing.id)})}"
+         alt="">
+
+    <h2 th:text="${listing.title}"></h2>
+    <p th:text="${listing.category.label}"></p>
+    <p th:text="${listing.dailyRate} + ' AUD / day'"></p>
+    <p th:text="'Expires ' + ${listing.expiryDate}"></p>
+    <p th:text="${listing.status.label}"></p>
+    <p>
+        Rating: <span th:text="${ratings.get(listing.id).display}"></span>
+        <a th:unless="${ratings.get(listing.id).empty}"
+           th:href="@{/reviews/listings/{id}(id=${listing.id})}">Read reviews</a>
+    </p>
+
+    <div th:if="${listing.status.name() == 'PUBLISHED'}">
+        <a th:href="@{/listings/{id}/edit(id=${listing.id})}">Edit</a>
+
+        <form th:action="@{/listings/{id}/delete(id=${listing.id})}"
+              method="post"
+              onsubmit="return confirm('Delete this listing?')">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+
+    <p th:unless="${listing.status.name() == 'PUBLISHED'}">
+        This listing is <span th:text="${listing.status.label}"></span>
+        and can no longer be edited.
+    </p>
+
+    <a th:if="${listing.status.name() == 'EXPIRED'}"
+       th:href="@{/listings/{id}/relist(id=${listing.id})}">Relist</a>
+
+</div>
+
+<p>
+    <a th:href="@{/listings/new}">Add a new listing</a>
+</p>
+
+</body>
+</html>

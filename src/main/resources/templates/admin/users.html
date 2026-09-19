@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+</head>
+
+<body>
+
+<h1>Manage users</h1>
+
+<p th:if="${success}" th:text="${success}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<form th:action="@{/admin/users}" method="get">
+    <label for="q">Name or email</label>
+    <input id="q" name="q" type="text" th:value="${q}">
+
+    <label for="role">Role</label>
+    <select id="role" name="role">
+        <option value="">Any role</option>
+        <option th:each="option : ${roles}"
+                th:value="${option}"
+                th:text="${option}"
+                th:selected="${option == selectedRole}"></option>
+    </select>
+
+    <label for="active">Status</label>
+    <select id="active" name="active">
+        <option value="">Any status</option>
+        <option value="true" th:selected="${selectedActive == true}">Active</option>
+        <option value="false" th:selected="${selectedActive == false}">Deactivated</option>
+    </select>
+
+    <button type="submit">Search</button>
+    <a th:href="@{/admin/users}">Clear filters</a>
+</form>
+
+<p th:if="${users.isEmpty()}">No accounts match your search.</p>
+
+<table th:unless="${users.isEmpty()}">
+    <thead>
+    <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="account : ${users}">
+        <td th:text="${account.name}"></td>
+        <td th:text="${account.email}"></td>
+        <td th:text="${account.role}"></td>
+        <td th:text="${account.active} ? 'Active' : 'Deactivated'"></td>
+        <td><a th:href="@{/admin/users/{id}(id=${account.id})}">Manage</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/admin}">Back to admin</a></p>
+
+</body>
+</html>

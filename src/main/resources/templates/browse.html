@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Gear</title>
+</head>
+
+<body>
+
+<h1>Browse Gear</h1>
+
+<form th:action="@{/}" th:object="${filters}" method="get">
+
+    <div>
+        <label for="category">Category</label>
+        <select id="category" th:field="*{category}">
+            <option value="">Any category</option>
+            <option th:each="option : ${categories}"
+                    th:value="${option}"
+                    th:text="${option.label}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="condition">Condition</label>
+        <select id="condition" th:field="*{condition}">
+            <option value="">Any condition</option>
+            <option th:each="option : ${conditions}"
+                    th:value="${option}"
+                    th:text="${option.label}"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="pickupSuburb">Suburb</label>
+        <input id="pickupSuburb" type="text" th:field="*{pickupSuburb}">
+    </div>
+
+    <div>
+        <label for="pickupPostcode">Postcode</label>
+        <input id="pickupPostcode" type="text" th:field="*{pickupPostcode}">
+    </div>
+
+    <div>
+        <label for="minRate">Min daily rate (AUD)</label>
+        <input id="minRate" type="number" step="0.01" min="0" th:field="*{minRate}">
+    </div>
+
+    <div>
+        <label for="maxRate">Max daily rate (AUD)</label>
+        <input id="maxRate" type="number" step="0.01" min="0" th:field="*{maxRate}">
+    </div>
+
+    <button type="submit">Search</button>
+    <a th:href="@{/}">Clear filters</a>
+
+</form>
+
+<p th:if="${listings.isEmpty()}">
+    No gear matches your search.
+</p>
+
+<div th:each="listing : ${listings}">
+    <img th:if="${thumbnails.get(listing.id) != null}"
+         th:src="@{/listings/photos/{photoId}(photoId=${thumbnails.get(listing.id)})}"
+         alt="">
+    <h2 th:text="${listing.title}"></h2>
+    <p th:text="${listing.category.label}"></p>
+    <p th:text="${listing.condition.label}"></p>
+    <p th:text="${listing.dailyRate} + ' AUD / day'"></p>
+    <p th:text="${listing.pickupSuburb} + ' ' + ${listing.pickupPostcode}"></p>
+    <a th:href="@{/listings/{id}(id=${listing.id})}">View listing</a>
+</div>
+
+</body>
+</html>

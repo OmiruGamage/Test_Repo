@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listing Detail</title>
+</head>
+
+<body>
+
+<div th:if="${listing == null}">
+    <p>This listing is no longer available.</p>
+</div>
+
+<div th:if="${listing != null}">
+
+    <h1 th:text="${listing.title}"></h1>
+
+    <img th:if="${thumbnailPhotoId != null}"
+         th:src="@{/listings/photos/{photoId}(photoId=${thumbnailPhotoId})}"
+         alt="">
+
+    <p th:text="${listing.category.label}"></p>
+    <p th:text="${listing.condition.label}"></p>
+    <p th:text="${listing.dailyRate} + ' AUD / day'"></p>
+    <p th:text="${listing.pickupSuburb} + ' ' + ${listing.pickupPostcode}"></p>
+
+    <p th:if="${listing.description != null}"
+       th:text="${listing.description}"></p>
+
+    <p>
+        Listed by
+        <a th:href="@{/reviews/users/{id}(id=${owner.id})}" th:text="${owner.name}"></a>
+        &mdash; <span th:text="${ownerRating.display}"></span>
+    </p>
+
+    <button th:unless="${isOwner}" type="button">
+        Request to Rent
+    </button>
+
+    <h2>Gear reviews</h2>
+
+    <p th:text="${gearRating.display}"></p>
+
+    <p th:if="${gearReviews.isEmpty()}">
+        Nobody has reviewed this gear yet.
+    </p>
+
+    <div th:each="review : ${gearReviews}">
+        <p>
+            <strong th:text="${review.rating} + ' / 5'"></strong>
+            from <span th:text="${review.reviewerName}"></span>,
+            <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}"></span>
+        </p>
+        <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
+    </div>
+
+</div>
+
+<p>
+    <a th:href="@{/}">Back to browse</a>
+</p>
+
+</body>
+</html>

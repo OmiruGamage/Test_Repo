@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Reviews</title>
+</head>
+
+<body>
+
+<h1>My Reviews</h1>
+
+<p th:if="${success}" th:text="${success}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<h2>Waiting for your review</h2>
+
+<p th:if="${pendingReviews.isEmpty()}">
+    You have no completed rentals to review.
+</p>
+
+<div th:each="pending : ${pendingReviews}">
+    <p>
+        <strong th:text="${pending.rental.listingTitle}"></strong>,
+        <span th:text="${#temporals.format(pending.rental.startDate, 'd MMM yyyy')}"></span>
+        to
+        <span th:text="${#temporals.format(pending.rental.endDate, 'd MMM yyyy')}"></span>
+    </p>
+    <a th:href="@{/reviews/rentals/{rentalId}/{type}(rentalId=${pending.rental.rentalId}, type=${pending.type})}"
+       th:switch="${pending.type.name()}">
+        <span th:case="'GEAR'">Rate the gear</span>
+        <span th:case="'OWNER'" th:text="'Rate the owner, ' + ${pending.rental.ownerName}"></span>
+        <span th:case="'RENTER'" th:text="'Rate the renter, ' + ${pending.rental.renterName}"></span>
+    </a>
+</div>
+
+<h2>Reviews you've given</h2>
+
+<p th:if="${writtenReviews.isEmpty()}">
+    You haven't written any reviews yet.
+</p>
+
+<div th:each="review : ${writtenReviews}">
+    <p>
+        <span th:text="${review.type.label}"></span>
+        for <span th:text="${review.listingTitle}"></span>
+        <span th:unless="${review.type.name() == 'GEAR'}"
+              th:text="'(' + ${review.revieweeName} + ')'"></span>:
+        <strong th:text="${review.rating} + ' / 5'"></strong>
+    </p>
+    <p th:if="${review.comment != null}" th:text="${review.comment}"></p>
+</div>
+
+<p>
+    <a th:href="@{/profile}">Back to profile</a>
+</p>
+
+</body>
+</html>

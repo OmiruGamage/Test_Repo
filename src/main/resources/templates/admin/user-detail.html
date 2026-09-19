@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage User</title>
+</head>
+
+<body>
+
+<h1 th:text="${account.name}"></h1>
+
+<p th:if="${success}" th:text="${success}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<p>Email: <span th:text="${account.email}"></span></p>
+<p>Role: <span th:text="${account.role}"></span></p>
+<p>Status: <span th:text="${account.active} ? 'Active' : 'Deactivated'"></span></p>
+<p><a th:href="@{/reviews/users/{id}(id=${account.id})}">View ratings</a></p>
+
+<form th:if="${account.active and account.role.name() != 'ADMIN'}"
+      th:action="@{/admin/users/{id}/deactivate(id=${account.id})}"
+      method="post"
+      onsubmit="return confirm('Deactivate this account? They will be signed out and their published listings removed.')">
+    <label for="deactivateReason">Reason for deactivating</label>
+    <textarea id="deactivateReason" name="reason" rows="3" maxlength="500" required></textarea>
+    <button type="submit">Deactivate account</button>
+</form>
+
+<form th:unless="${account.active}"
+      th:action="@{/admin/users/{id}/reactivate(id=${account.id})}"
+      method="post"
+      onsubmit="return confirm('Reactivate this account?')">
+    <label for="reactivateReason">Reason for reactivating</label>
+    <textarea id="reactivateReason" name="reason" rows="3" maxlength="500" required></textarea>
+    <button type="submit">Reactivate account</button>
+</form>
+
+<h2>Listings</h2>
+
+<p th:if="${listings.isEmpty()}">This user has no listings.</p>
+
+<table th:unless="${listings.isEmpty()}">
+    <thead>
+    <tr><th>Title</th><th>Category</th><th>Daily rate</th><th>Expires</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="listing : ${listings}">
+        <td th:text="${listing.title}"></td>
+        <td th:text="${listing.category.label}"></td>
+        <td th:text="${listing.dailyRate} + ' AUD'"></td>
+        <td th:text="${listing.expiryDate}"></td>
+        <td th:text="${listing.status.label}"></td>
+        <td>
+            <form th:if="${listing.status.name() != 'REMOVED'}"
+                  th:action="@{/admin/listings/{id}/remove(id=${listing.id})}"
+                  method="post"
+                  onsubmit="return confirm('Remove this listing?')">
+                <input type="hidden" name="returnTo" th:value="'/admin/users/' + ${account.id}">
+                <input type="text" name="reason" maxlength="500" placeholder="Reason" required>
+                <button type="submit">Remove</button>
+            </form>
+            <form th:if="${listing.status.name() == 'REMOVED' and account.active}"
+                  th:action="@{/admin/listings/{id}/restore(id=${listing.id})}"
+                  method="post"
+                  onsubmit="return confirm('Restore this listing?')">
+                <input type="hidden" name="returnTo" th:value="'/admin/users/' + ${account.id}">
+                <input type="text" name="reason" maxlength="500" placeholder="Reason" required>
+                <button type="submit">Restore</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Action history</h2>
+
+<p th:if="${actions.isEmpty()}">No admin actions have been taken on this account.</p>
+
+<table th:unless="${actions.isEmpty()}">
+    <thead>
+    <tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="action : ${actions}">
+        <td th:text="${#temporals.format(action.createdAt, 'd MMM yyyy HH:mm')}"></td>
+        <td th:text="${action.adminName}"></td>
+        <td th:text="${action.actionType.label}"></td>
+        <td th:text="${action.targetLabel}"></td>
+        <td th:text="${action.reason}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/admin/users}">Back to users</a></p>
+
+</body>
+</html>

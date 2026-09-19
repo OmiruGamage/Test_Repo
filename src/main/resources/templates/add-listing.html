@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Listing</title>
+</head>
+
+<body>
+
+<h1 th:text="${isEdit} ? 'Edit Listing' : 'Add a Listing'"></h1>
+
+<p th:if="${param.created}">
+    Your listing has been published.
+</p>
+
+<form th:action="${isEdit} ? @{/listings/{id}(id=${listingId})} : @{/listings}"
+      th:object="${listingForm}"
+      method="post"
+      enctype="multipart/form-data">
+
+    <div>
+        <label for="title">Title</label>
+        <input
+            id="title"
+            type="text"
+            th:field="*{title}">
+        <span th:if="${#fields.hasErrors('title')}"
+              th:errors="*{title}"></span>
+    </div>
+
+    <div>
+        <label for="category">Category</label>
+        <select id="category" th:field="*{category}">
+            <option value="">Choose a category</option>
+            <option th:each="option : ${categories}"
+                    th:value="${option}"
+                    th:text="${option.label}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('category')}"
+              th:errors="*{category}"></span>
+    </div>
+
+    <div>
+        <label for="condition">Condition</label>
+        <select id="condition" th:field="*{condition}">
+            <option value="">Choose a condition</option>
+            <option th:each="option : ${conditions}"
+                    th:value="${option}"
+                    th:text="${option.label}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('condition')}"
+              th:errors="*{condition}"></span>
+    </div>
+
+    <div>
+        <label for="dailyRate">Daily rate (AUD)</label>
+        <input
+            id="dailyRate"
+            type="number"
+            step="0.01"
+            min="0.01"
+            th:field="*{dailyRate}">
+        <span th:if="${#fields.hasErrors('dailyRate')}"
+              th:errors="*{dailyRate}"></span>
+    </div>
+
+    <div>
+        <label for="pickupSuburb">Pickup suburb</label>
+        <input
+            id="pickupSuburb"
+            type="text"
+            th:field="*{pickupSuburb}">
+        <span th:if="${#fields.hasErrors('pickupSuburb')}"
+              th:errors="*{pickupSuburb}"></span>
+    </div>
+
+    <div>
+        <label for="pickupPostcode">Pickup postcode</label>
+        <input
+            id="pickupPostcode"
+            type="text"
+            inputmode="numeric"
+            pattern="\d{4}"
+            maxlength="4"
+            th:field="*{pickupPostcode}">
+        <span th:if="${#fields.hasErrors('pickupPostcode')}"
+              th:errors="*{pickupPostcode}"></span>
+    </div>
+
+    <div>
+        <label for="expiryDate">Expiry date</label>
+        <input
+            id="expiryDate"
+            type="date"
+            th:field="*{expiryDate}">
+        <span th:if="${#fields.hasErrors('expiryDate')}"
+              th:errors="*{expiryDate}"></span>
+    </div>
+
+    <div>
+        <label for="description">Description (optional)</label>
+        <textarea
+            id="description"
+            rows="5"
+            th:field="*{description}"></textarea>
+        <span th:if="${#fields.hasErrors('description')}"
+              th:errors="*{description}"></span>
+    </div>
+
+    <div th:unless="${isEdit}">
+        <label for="photos">Photos (JPEG or PNG, 1-5, 5MB each)</label>
+        <input
+            id="photos"
+            type="file"
+            multiple="multiple"
+            accept="image/jpeg,image/png"
+            th:field="*{photos}">
+        <span th:if="${#fields.hasErrors('photos')}"
+              th:errors="*{photos}"></span>
+    </div>
+
+    <button type="submit"
+            th:text="${isEdit} ? 'Save Changes' : 'Publish Listing'"></button>
+
+</form>
+
+<p>
+    <a th:href="@{/profile}">Back to profile</a>
+</p>
+
+</body>
+</html>

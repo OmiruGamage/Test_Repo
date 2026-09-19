@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Action History</title>
+</head>
+
+<body>
+
+<h1>Action history</h1>
+
+<p th:if="${actions.isEmpty()}">No admin actions have been taken yet.</p>
+
+<table th:unless="${actions.isEmpty()}">
+    <thead>
+    <tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="action : ${actions}">
+        <td th:text="${#temporals.format(action.createdAt, 'd MMM yyyy HH:mm')}"></td>
+        <td th:text="${action.adminName}"></td>
+        <td th:text="${action.actionType.label}"></td>
+        <td th:text="${action.targetLabel}"></td>
+        <td th:text="${action.reason}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a th:href="@{/admin}">Back to admin</a></p>
+
+</body>
+</html>
