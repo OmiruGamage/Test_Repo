@@ -1,5 +1,7 @@
 package au.edu.rmit.sept.webapp.gear;
 
+import au.edu.rmit.sept.webapp.review.ReviewService;
+import au.edu.rmit.sept.webapp.review.ReviewType;
 import au.edu.rmit.sept.webapp.user.UserService;
 
 import jakarta.validation.Valid;
@@ -28,13 +30,16 @@ public class GearListingController {
 
     private final GearListingService gearListingService;
     private final UserService userService;
+    private final ReviewService reviewService;
 
     public GearListingController(
             GearListingService gearListingService,
-            UserService userService) {
+            UserService userService,
+            ReviewService reviewService) {
 
         this.gearListingService = gearListingService;
         this.userService = userService;
+        this.reviewService = reviewService;
     }
 
     @ModelAttribute("categories")
@@ -104,6 +109,14 @@ public class GearListingController {
                 gearListingService.findFirstPhotoIds(List.of(listingId)).get(listingId)
         );
 
+        // Reviews and Ratings: gear rating, gear reviews and the owner's rating
+        model.addAttribute("gearRating", reviewService.gearRating(listingId));
+        model.addAttribute("gearReviews", reviewService.gearReviews(listingId));
+        model.addAttribute(
+                "ownerRating",
+                reviewService.userRating(listing.get().getOwnerId(), ReviewType.OWNER)
+        );
+
         return "listing-detail";
     }
 
@@ -120,6 +133,7 @@ public class GearListingController {
 
         model.addAttribute("listings", listings);
         model.addAttribute("thumbnails", gearListingService.findFirstPhotoIds(listingIds));
+        model.addAttribute("ratings", reviewService.gearRatings(listingIds));
 
         return "my-gear";
     }

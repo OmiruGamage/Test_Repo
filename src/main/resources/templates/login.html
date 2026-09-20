@@ -18,6 +18,10 @@
     You have been logged out.
 </p>
 
+<p th:if="${param.deactivated}">
+    This account has been deactivated by an administrator.
+</p>
+
 <p th:if="${param.registered}">
     Account created successfully!
 </p>

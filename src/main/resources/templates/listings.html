@@ -52,7 +52,7 @@
         <td th:text="${listing.expiryDate}"></td>
         <td th:text="${listing.status.label}"></td>
         <td>
-            <form th:if="${listing.status.name() != 'REMOVED'}"
+            <form th:if="${listing.status.name() == 'PUBLISHED' or listing.status.name() == 'EXPIRED'}"
                   th:action="@{/admin/listings/{id}/remove(id=${listing.id})}"
                   method="post"
                   onsubmit="return confirm('Remove this listing?')">
